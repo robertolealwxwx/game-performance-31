@@ -1,17 +1,30 @@
 import logging
+import os
+from logging.handlers import RotatingFileHandler
 
-# Configure the logger for performance tracking
-class PerformanceLogger:
-    def __init__(self, name):
-        self.logger = logging.getLogger(name)
-        handler = logging.FileHandler('performance.log')
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-        handler.setFormatter(formatter)
-        self.logger.addHandler(handler)
-        self.logger.setLevel(logging.INFO)
+# Constants for logger configuration
+LOG_FILE = 'game_performance.log'
+LOG_LEVEL = logging.DEBUG
 
-    def log_event(self, event_name, duration):
-        self.logger.info(f'Event: {event_name}, Duration: {duration:.6f} seconds')
+def setup_logger():
+    # Create a logger object
+    logger = logging.getLogger('GamePerformanceLogger')
+    logger.setLevel(LOG_LEVEL)
 
-    def log_error(self, error_message):
-        self.logger.error(f'Error: {error_message}')
+    # Create a rotating file handler
+    handler = RotatingFileHandler(LOG_FILE, maxBytes=5*1024*1024, backupCount=3)
+    handler.setLevel(LOG_LEVEL)
+
+    # Create and set formatter
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+
+    # Add the handler to the logger
+    logger.addHandler(handler)
+
+    return logger
+
+# Example usage
+if __name__ == '__main__':
+    log = setup_logger()
+    log.debug('Logger is set up and ready to use!')
