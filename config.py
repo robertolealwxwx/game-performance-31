@@ -1,44 +1,28 @@
-from typing import Dict, Any
+import json
+import os
 
-def load_config(file_path: str) -> Dict[str, Any]:
-    """
-    Loads configuration settings from a JSON file.
+class ConfigLoader:
+    def __init__(self, default_config_path):
+        self.default_config_path = default_config_path
+        self.config = self.load_defaults()
 
-    :param file_path: The path to the JSON configuration file.
-    :return: A dictionary containing the configuration settings.
-    """
-    import json
-    with open(file_path, 'r') as f:
-        config = json.load(f)
-    return config
+    def load_defaults(self):
+        if not os.path.exists(self.default_config_path):
+            raise FileNotFoundError(f"Default config file not found: {self.default_config_path}")
+        with open(self.default_config_path, 'r') as file:
+            return json.load(file)
 
+    def load_user_config(self, user_config_path):
+        if os.path.exists(user_config_path):
+            with open(user_config_path, 'r') as file:
+                user_config = json.load(file)
+                self.config.update(user_config)
 
-def save_config(file_path: str, config: Dict[str, Any]) -> None:
-    """
-    Saves configuration settings to a JSON file.
+    def get(self, key, default=None):
+        return self.config.get(key, default)
 
-    :param file_path: The path to the JSON configuration file.
-    :param config: A dictionary containing configuration settings to save.
-    """
-    import json
-    with open(file_path, 'w') as f:
-        json.dump(config, f, indent=4)
-
-
-def get_default_config() -> Dict[str, Any]:
-    """
-    Returns the default configuration settings.
-
-    :return: A dictionary containing default configuration settings.
-    """
-    return {
-        'resolution': '1920x1080',
-        'fullscreen': True,
-        'volume': 75,
-        'controls': {
-            'move_up': 'W',
-            'move_down': 'S',
-            'move_left': 'A',
-            'move_right': 'D'
-        }
-    }
+# Example usage:
+if __name__ == '__main__':
+    config_loader = ConfigLoader('default_config.json')
+    config_loader.load_user_config('user_config.json')
+    print(config_loader.get('game_speed', 1.0))
