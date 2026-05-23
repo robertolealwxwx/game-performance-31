@@ -1,23 +1,27 @@
 import logging
+from logging.handlers import RotatingFileHandler
 
-# Configure the logger
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
+# Logger configuration
 
-def log_input_validation(input_data):
-    # Log the input being validated
-    logger.debug(f'Validating input: {input_data}')
+def setup_logger(log_file='game.log', max_bytes=5*1024*1024, backup_count=3):
+    logger = logging.getLogger('GameLogger')
+    logger.setLevel(logging.DEBUG)
 
-def log_validation_result(is_valid):
-    # Log the result of validation
-    if is_valid:
-        logger.info('Input is valid.')
-    else:
-        logger.warning('Input is invalid.')
+    # Create a rotating file handler
+    handler = RotatingFileHandler(log_file, maxBytes=max_bytes, backupCount=backup_count)
+    handler.setLevel(logging.DEBUG)
 
+    # Create a logging format
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+
+    # Add the handler to the logger
+    logger.addHandler(handler)
+    return logger
+
+# Example usage
 if __name__ == '__main__':
-    # Example usage of the logger
-    test_input = 'example_input'
-    log_input_validation(test_input)
-    log_validation_result(True)
+    my_logger = setup_logger()
+    my_logger.info('Logger is set up and ready')
+    my_logger.error('This is an error message')
+    my_logger.debug('Debugging information here')
