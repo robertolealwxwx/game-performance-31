@@ -1,30 +1,23 @@
 import logging
-import os
-from logging.handlers import RotatingFileHandler
 
-# Constants for logger configuration
-LOG_FILE = 'game_performance.log'
-LOG_LEVEL = logging.DEBUG
+# Configure the logger
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
-def setup_logger():
-    # Create a logger object
-    logger = logging.getLogger('GamePerformanceLogger')
-    logger.setLevel(LOG_LEVEL)
+def log_input_validation(input_data):
+    # Log the input being validated
+    logger.debug(f'Validating input: {input_data}')
 
-    # Create a rotating file handler
-    handler = RotatingFileHandler(LOG_FILE, maxBytes=5*1024*1024, backupCount=3)
-    handler.setLevel(LOG_LEVEL)
+def log_validation_result(is_valid):
+    # Log the result of validation
+    if is_valid:
+        logger.info('Input is valid.')
+    else:
+        logger.warning('Input is invalid.')
 
-    # Create and set formatter
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    handler.setFormatter(formatter)
-
-    # Add the handler to the logger
-    logger.addHandler(handler)
-
-    return logger
-
-# Example usage
 if __name__ == '__main__':
-    log = setup_logger()
-    log.debug('Logger is set up and ready to use!')
+    # Example usage of the logger
+    test_input = 'example_input'
+    log_input_validation(test_input)
+    log_validation_result(True)
