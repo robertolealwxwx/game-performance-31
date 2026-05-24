@@ -1,28 +1,35 @@
 import json
 import os
 
+DEFAULT_CONFIG = {
+    'resolution': '1920x1080',
+    'fullscreen': True,
+    'volume': 75,
+    'controls': {
+        'move_up': 'W',
+        'move_down': 'S',
+        'move_left': 'A',
+        'move_right': 'D',
+        'shoot': 'SPACE'
+    }
+}
+
 class ConfigLoader:
-    def __init__(self, default_config_path):
-        self.default_config_path = default_config_path
-        self.config = self.load_defaults()
+    def __init__(self, config_file='config.json'): 
+        self.config_file = config_file
+        self.config = self.load_config()
 
-    def load_defaults(self):
-        if not os.path.exists(self.default_config_path):
-            raise FileNotFoundError(f"Default config file not found: {self.default_config_path}")
-        with open(self.default_config_path, 'r') as file:
-            return json.load(file)
-
-    def load_user_config(self, user_config_path):
-        if os.path.exists(user_config_path):
-            with open(user_config_path, 'r') as file:
+    def load_config(self):
+        if os.path.exists(self.config_file):
+            with open(self.config_file, 'r') as file:
                 user_config = json.load(file)
-                self.config.update(user_config)
+            return {**DEFAULT_CONFIG, **user_config}
+        return DEFAULT_CONFIG
 
-    def get(self, key, default=None):
-        return self.config.get(key, default)
+    def get_config(self):
+        return self.config
 
-# Example usage:
+# Example usage
 if __name__ == '__main__':
-    config_loader = ConfigLoader('default_config.json')
-    config_loader.load_user_config('user_config.json')
-    print(config_loader.get('game_speed', 1.0))
+    loader = ConfigLoader()
+    print(loader.get_config())
