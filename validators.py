@@ -1,35 +1,37 @@
-import re
+def validate_score(score):
+    """
+    Validates the score provided by the player.
+    Returns True if the score is an integer between 0 and 100,
+    raises ValueError if invalid.
+    """
+    if not isinstance(score, int):
+        raise ValueError('Score must be an integer.')
+    if score < 0 or score > 100:
+        raise ValueError('Score must be between 0 and 100.')
+    return True
 
-class ValidationError(Exception):
-    pass
 
-def validate_username(username):
-    if not isinstance(username, str):
-        raise ValidationError('Username must be a string.')
-    if len(username) < 3 or len(username) > 20:
-        raise ValidationError('Username must be between 3 to 20 characters.')
-    if not re.match('^[a-zA-Z0-9_]*$', username):
-        raise ValidationError('Username can only contain letters, numbers, and underscores.')
+def validate_player_name(name):
+    """
+    Validates the player's name.
+    Returns True if the name is a non-empty string,
+    raises ValueError if invalid.
+    """
+    if not isinstance(name, str):
+        raise ValueError('Player name must be a string.')
+    if len(name.strip()) == 0:
+        raise ValueError('Player name cannot be empty.')
+    return True
 
-def validate_email(email):
-    if not isinstance(email, str):
-        raise ValidationError('Email must be a string.')
-    email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-    if not re.match(email_regex, email):
-        raise ValidationError('Invalid email format.')
 
-def validate_age(age):
-    if not isinstance(age, int):
-        raise ValidationError('Age must be an integer.')
-    if age < 0 or age > 120:
-        raise ValidationError('Age must be between 0 and 120.')
-
-if __name__ == '__main__':
-    # Sample validations for testing
-    try:
-        validate_username('user_1')
-        validate_email('example@test.com')
-        validate_age(25)
-        print('All validations passed!')
-    except ValidationError as e:
-        print(f'Validation error: {e}')
+def validate_game_level(level):
+    """
+    Validates the game level.
+    Returns True if the level is in the acceptable range,
+    raises ValueError if invalid.
+    """
+    if not isinstance(level, int):
+        raise ValueError('Game level must be an integer.')
+    if level < 1 or level > 10:
+        raise ValueError('Game level must be between 1 and 10.')
+    return True
