@@ -1,39 +1,47 @@
-import json
-
-def load_game_data(file_path):
-    """
-    Loads game data from a JSON file.
-    
-    Args:
-        file_path (str): Path to the JSON file containing game data.
-    
-    Returns:
-        dict: Parsed game data as a dictionary.
-    """
-    with open(file_path, 'r') as file:
-        return json.load(file)
+import numpy as np
+import random
 
 
-def save_game_data(data, file_path):
-    """
-    Saves game data to a JSON file.
-    
-    Args:
-        data (dict): Game data to save.
-        file_path (str): Path to the JSON file where data will be saved.
-    """
-    with open(file_path, 'w') as file:
-        json.dump(data, file, indent=4)
+def calculate_average(scores):
+    """Calculate the average of a list of scores."""
+    if not scores:
+        return 0
+    return sum(scores) / len(scores)
 
 
-def update_game_data(file_path, updates):
-    """
-    Updates the game data with new values.
-    
-    Args:
-        file_path (str): Path to the JSON file containing game data.
-        updates (dict): Dictionary containing updates to apply.
-    """
-    data = load_game_data(file_path)
-    data.update(updates)
-    save_game_data(data, file_path)
+def find_high_score(scores):
+    """Return the highest score from a list."""
+    if not scores:
+        return None
+    return max(scores)
+
+
+def generate_random_item(items):
+    """Select a random item from a list."""
+    if not items:
+        return None
+    return random.choice(items)
+
+
+def normalize_scores(scores):
+    """Normalize a list of scores to a range of 0 to 1."""
+    if not scores:
+        return []
+    max_score = max(scores)
+    return [score / max_score for score in scores]
+
+
+def shuffle_list(lst):
+    """Shuffle a list in place and return it."""
+    random.shuffle(lst)
+    return lst
+
+
+# Example Usage:
+# scores = [10, 20, 30]
+# print(calculate_average(scores))
+# print(find_high_score(scores))
+# items = ['sword', 'shield', 'potion']
+# print(generate_random_item(items))
+# print(normalize_scores(scores))
+# print(shuffle_list(items))
