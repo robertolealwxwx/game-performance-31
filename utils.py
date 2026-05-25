@@ -1,20 +1,39 @@
-import time
-import requests
+import json
 
-class NetworkError(Exception):
-    pass
+def load_game_data(file_path):
+    """
+    Loads game data from a JSON file.
+    
+    Args:
+        file_path (str): Path to the JSON file containing game data.
+    
+    Returns:
+        dict: Parsed game data as a dictionary.
+    """
+    with open(file_path, 'r') as file:
+        return json.load(file)
 
-def retry_request(url, max_retries=3, delay=2):
-    """Perform a network request with retry logic."""
-    attempts = 0
-    while attempts < max_retries:
-        try:
-            response = requests.get(url)
-            response.raise_for_status()  # Raise an error for bad responses
-            return response.json()  # Return JSON if successful
-        except requests.RequestException as e:
-            attempts += 1
-            if attempts == max_retries:
-                raise NetworkError(f'Failed to fetch {url} after {max_retries} attempts')
-            time.sleep(delay)  # Wait before retrying
-            continue
+
+def save_game_data(data, file_path):
+    """
+    Saves game data to a JSON file.
+    
+    Args:
+        data (dict): Game data to save.
+        file_path (str): Path to the JSON file where data will be saved.
+    """
+    with open(file_path, 'w') as file:
+        json.dump(data, file, indent=4)
+
+
+def update_game_data(file_path, updates):
+    """
+    Updates the game data with new values.
+    
+    Args:
+        file_path (str): Path to the JSON file containing game data.
+        updates (dict): Dictionary containing updates to apply.
+    """
+    data = load_game_data(file_path)
+    data.update(updates)
+    save_game_data(data, file_path)
