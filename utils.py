@@ -1,47 +1,33 @@
-import numpy as np
+import time
+import requests
 import random
 
+class NetworkError(Exception):
+    pass
 
-def calculate_average(scores):
-    """Calculate the average of a list of scores."""
-    if not scores:
-        return 0
-    return sum(scores) / len(scores)
+def retry_network_operation(func, max_retries=3, delay=2, backoff=2):
+    attempts = 0
+    while attempts < max_retries:
+        try:
+            return func()
+        except Exception as e:
+            attempts += 1
+            if attempts == max_retries:
+                raise NetworkError(f'Failed after {max_retries} attempts: {str(e)}')
+            print(f'Retry {attempts}/{max_retries}...')
+            time.sleep(delay)
+            delay *= backoff
 
+# Example network operation
 
-def find_high_score(scores):
-    """Return the highest score from a list."""
-    if not scores:
-        return None
-    return max(scores)
+def fetch_data():
+    if random.choice([True, False]):  # Simulate random failure
+        raise Exception('Network failure!')
+    return requests.get('https://api.example.com/data').json()
 
-
-def generate_random_item(items):
-    """Select a random item from a list."""
-    if not items:
-        return None
-    return random.choice(items)
-
-
-def normalize_scores(scores):
-    """Normalize a list of scores to a range of 0 to 1."""
-    if not scores:
-        return []
-    max_score = max(scores)
-    return [score / max_score for score in scores]
-
-
-def shuffle_list(lst):
-    """Shuffle a list in place and return it."""
-    random.shuffle(lst)
-    return lst
-
-
-# Example Usage:
-# scores = [10, 20, 30]
-# print(calculate_average(scores))
-# print(find_high_score(scores))
-# items = ['sword', 'shield', 'potion']
-# print(generate_random_item(items))
-# print(normalize_scores(scores))
-# print(shuffle_list(items))
+if __name__ == '__main__':
+    try:
+        data = retry_network_operation(fetch_data)
+        print('Data fetched successfully:', data)
+    except NetworkError as e:
+        print(e)
