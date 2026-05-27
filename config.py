@@ -1,35 +1,40 @@
 import json
 import os
 
-DEFAULT_CONFIG = {
+class ConfigLoader:
+    def __init__(self, default_config):
+        self.default_config = default_config
+        self.config = self.default_config.copy()
+
+    def load_config(self, filepath):
+        if os.path.exists(filepath):
+            with open(filepath, 'r') as file:
+                try:
+                    user_config = json.load(file)
+                    self.config.update(user_config)
+                except json.JSONDecodeError:
+                    print('Error: Invalid JSON format in configuration file.')
+        else:
+            print(f'Warning: Configuration file {filepath} not found, using defaults.')
+
+    def get(self, key, default=None):
+        return self.config.get(key, default)
+
+# Default configuration
+default_config = {
     'resolution': '1920x1080',
     'fullscreen': True,
-    'volume': 75,
+    'volume': 0.8,
     'controls': {
-        'move_up': 'W',
-        'move_down': 'S',
-        'move_left': 'A',
-        'move_right': 'D',
-        'shoot': 'SPACE'
+        'jump': 'space',
+        'shoot': 'ctrl'
     }
 }
 
-class ConfigLoader:
-    def __init__(self, config_file='config.json'): 
-        self.config_file = config_file
-        self.config = self.load_config()
+# Usage example
+config_loader = ConfigLoader(default_config)
+config_loader.load_config('user_config.json')
 
-    def load_config(self):
-        if os.path.exists(self.config_file):
-            with open(self.config_file, 'r') as file:
-                user_config = json.load(file)
-            return {**DEFAULT_CONFIG, **user_config}
-        return DEFAULT_CONFIG
-
-    def get_config(self):
-        return self.config
-
-# Example usage
-if __name__ == '__main__':
-    loader = ConfigLoader()
-    print(loader.get_config())
+# Accessing a configuration value
+volume = config_loader.get('volume')
+print(f'Volume level: {volume}')
