@@ -1,33 +1,49 @@
-import time
-import requests
-import random
+def calculate_fps(frames, time_elapsed):
+    """
+    Calculate frames per second given the number of frames
+    and the elapsed time.
+    """
+    if time_elapsed <= 0:
+        return 0
+    return frames / time_elapsed
 
-class NetworkError(Exception):
-    pass
 
-def retry_network_operation(func, max_retries=3, delay=2, backoff=2):
-    attempts = 0
-    while attempts < max_retries:
-        try:
-            return func()
-        except Exception as e:
-            attempts += 1
-            if attempts == max_retries:
-                raise NetworkError(f'Failed after {max_retries} attempts: {str(e)}')
-            print(f'Retry {attempts}/{max_retries}...')
-            time.sleep(delay)
-            delay *= backoff
+def clamp(value, min_value, max_value):
+    """
+    Restrict a value to be within min and max limits.
+    """
+    return max(min(value, max_value), min_value)
 
-# Example network operation
 
-def fetch_data():
-    if random.choice([True, False]):  # Simulate random failure
-        raise Exception('Network failure!')
-    return requests.get('https://api.example.com/data').json()
-
-if __name__ == '__main__':
+def load_image(file_path):
+    """
+    Load an image from a specified file path.
+    """
+    from PIL import Image
     try:
-        data = retry_network_operation(fetch_data)
-        print('Data fetched successfully:', data)
-    except NetworkError as e:
-        print(e)
+        img = Image.open(file_path)
+        return img
+    except IOError:
+        print(f'Error loading image: {file_path}')
+        return None
+
+
+def interpolate_color(color1, color2, factor):
+    """
+    Interpolate between two RGB colors based on a factor.
+    """
+    return (
+        int(color1[0] + (color2[0] - color1[0]) * factor),
+        int(color1[1] + (color2[1] - color1[1]) * factor),
+        int(color1[2] + (color2[2] - color1[2]) * factor)
+    )
+
+
+def save_to_file(data, file_path):
+    """
+    Save data to a file in JSON format.
+    """
+    import json
+    with open(file_path, 'w') as f:
+        json.dump(data, f, indent=4)
+
