@@ -1,30 +1,41 @@
-import sys
-import re
+import json
+from utils import calculate_score
+from constants import MAX_SCORE
 
-# Function to validate user input
+class GameHandler:
+    def __init__(self, player_name):
+        self.player_name = player_name
+        self.score = 0
 
-def validate_input(user_input):
-    if not isinstance(user_input, str):
-        raise ValueError("Input must be a string.")
-    if len(user_input) == 0:
-        raise ValueError("Input cannot be empty.")
-    if not re.match("^[A-Za-z0-9_]*$, user_input):
-        raise ValueError("Input can only contain alphanumeric characters and underscores.")
+    def update_score(self, points):
+        """Update the player's score and limit it to MAX_SCORE."""
+        self.score += points
+        if self.score > MAX_SCORE:
+            self.score = MAX_SCORE
 
-# Main processing loop
+    def get_score(self):
+        """Return the current score of the player."""
+        return self.score
 
-def main_loop():
-    while True:
+    def save_score(self, filename='scores.json'):
+        """Save the current score to a JSON file."""
+        data = {'player_name': self.player_name, 'score': self.score}
+        with open(filename, 'w') as f:
+            json.dump(data, f)
+
+    def load_score(self, filename='scores.json'):
+        """Load player score from a JSON file."""
         try:
-            user_input = input("Enter command: ")
-            validate_input(user_input)
-            print(f"You entered a valid command: {user_input}")
-            # Here you can include the logic to handle valid commands
-        except ValueError as e:
-            print(f"Error: {e}")  
-        except KeyboardInterrupt:
-            print("Exiting the game.")
-            sys.exit(0)
+            with open(filename, 'r') as f:
+                data = json.load(f)
+                self.player_name = data['player_name']
+                self.score = data['score']
+        except (FileNotFoundError, KeyError):
+            print('Score file not found or corrupted')
+            self.score = 0
 
 if __name__ == '__main__':
-    main_loop()
+    handler = GameHandler('Player1')
+    handler.update_score(50)
+    print(f'Score: {handler.get_score()}')
+    handler.save_score()
