@@ -1,24 +1,37 @@
-FPS_LIMIT = 60  # Maximum frames per second
+from typing import Final
 
-TARGET_RESOLUTION = (1920, 1080)  # Target resolution for rendering
+# Game-related constants
 
-# Color constants in RGB format
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
+# Screen dimensions
+SCREEN_WIDTH: Final[int] = 1024
+SCREEN_HEIGHT: Final[int] = 768
 
-# Game settings constants
-GRAVITY = 9.81  # Gravity constant in m/s²
-PLAYER_SPEED = 5.0  # Speed of the player character
-ENEMY_SPEED = 3.0  # Speed of enemy characters
-JUMP_HEIGHT = 1.5  # Height player can jump
+# Frame rate settings
+FPS: Final[int] = 60
 
-# Performance tuning constants
-ENABLE_VSYNC = True  # Enable vertical sync
-ASSET_LOAD_PRIORITY = 2  # Asset loading priority for smoother performance
+# Color constants (RGB)
+BLACK: Final[tuple[int, int, int]] = (0, 0, 0)
+WHITE: Final[tuple[int, int, int]] = (255, 255, 255)
+RED: Final[tuple[int, int, int]] = (255, 0, 0)
+GREEN: Final[tuple[int, int, int]] = (0, 255, 0)
+BLUE: Final[tuple[int, int, int]] = (0, 0, 255)
 
-# Audio settings
-MUSIC_VOLUME = 0.5  # Volume for background music (0.0 to 1.0)
-SFX_VOLUME = 0.7  # Volume for sound effects (0.0 to 1.0)
+# Minimum and maximum player health
+MIN_HEALTH: Final[int] = 0
+MAX_HEALTH: Final[int] = 100
+
+# Game levels
+LEVELS: Final[list[str]] = ["Easy", "Medium", "Hard"]
+
+# Difficulty multipliers
+DIFFICULTY_MULTIPLIERS: Final[dict[str, float]] = {
+    "Easy": 1.0,
+    "Medium": 1.5,
+    "Hard": 2.0,
+}
+
+# Game keys
+MOVE_UP: Final[str] = 'w'
+MOVE_DOWN: Final[str] = 's'
+MOVE_LEFT: Final[str] = 'a'
+MOVE_RIGHT: Final[str] = 'd'
