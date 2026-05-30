@@ -1,40 +1,33 @@
-import json
-import os
+class GameConfig:
+    def __init__(self):
+        self.settings = {
+            'screen_width': 800,
+            'screen_height': 600,
+            'fps': 60,
+            'background_color': (0, 0, 0),
+            'title': 'Game Title'
+        }
 
-class ConfigLoader:
-    def __init__(self, default_config):
-        self.default_config = default_config
-        self.config = self.default_config.copy()
+    def get_setting(self, key):
+        return self.settings.get(key, None)
 
-    def load_config(self, filepath):
-        if os.path.exists(filepath):
-            with open(filepath, 'r') as file:
-                try:
-                    user_config = json.load(file)
-                    self.config.update(user_config)
-                except json.JSONDecodeError:
-                    print('Error: Invalid JSON format in configuration file.')
-        else:
-            print(f'Warning: Configuration file {filepath} not found, using defaults.')
+    def set_setting(self, key, value):
+        self.settings[key] = value
 
-    def get(self, key, default=None):
-        return self.config.get(key, default)
+    def load_settings(self, file_path):
+        import json
+        try:
+            with open(file_path, 'r') as f:
+                self.settings.update(json.load(f))
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            print(f'Error loading settings: {e}')
 
-# Default configuration
-default_config = {
-    'resolution': '1920x1080',
-    'fullscreen': True,
-    'volume': 0.8,
-    'controls': {
-        'jump': 'space',
-        'shoot': 'ctrl'
-    }
-}
+    def save_settings(self, file_path):
+        import json
+        with open(file_path, 'w') as f:
+            json.dump(self.settings, f, indent=4)
 
-# Usage example
-config_loader = ConfigLoader(default_config)
-config_loader.load_config('user_config.json')
-
-# Accessing a configuration value
-volume = config_loader.get('volume')
-print(f'Volume level: {volume}')
+# Example of usage:
+# config = GameConfig()
+# config.load_settings('config.json')
+# print(config.get_setting('title'))
