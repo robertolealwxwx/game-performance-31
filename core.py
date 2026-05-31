@@ -1,23 +1,34 @@
-import time
+import sys
 
-def optimized_heavy_computation(data):
-    result = []
-    start_time = time.time()
-    for item in data:
-        # Replace an expensive operation with a more efficient one
-        processed_item = process_item(item)
-        result.append(processed_item)
-    end_time = time.time()
-    print(f"Processing took {end_time - start_time:.4f} seconds")
-    return result
+# Constants for input validation
+VALID_INPUTS = {'up', 'down', 'left', 'right', 'quit'}
 
+class Game:
+    def __init__(self):
+        self.running = True
 
-def process_item(item):
-    # Efficient computation logic
-    # Assuming item is a dictionary with numerical values
-    return {key: value * 2 for key, value in item.items()}
+    def run(self):
+        while self.running:
+            user_input = input('Enter your move (up, down, left, right, quit): ')
+            self.process_input(user_input)
 
+    def process_input(self, user_input):
+        # Validate input
+        if self.validate_input(user_input):
+            self.handle_move(user_input)
+        else:
+            print(f'Invalid input: {user_input}. Please try again.')
 
-if __name__ == "__main__":
-    sample_data = [{"a": 1, "b": 2}, {"a": 3, "b": 4}]
-    optimized_heavy_computation(sample_data)
+    def validate_input(self, user_input):
+        return user_input in VALID_INPUTS
+
+    def handle_move(self, move):
+        if move == 'quit':
+            self.running = False
+            print('Exiting the game.')
+        else:
+            print(f'You moved {move}.')
+
+if __name__ == '__main__':
+    game = Game()
+    game.run()
