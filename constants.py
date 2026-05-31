@@ -1,37 +1,32 @@
-from typing import Final
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
+FPS = 60
+PLAYER_SPEED = 5
+ENEMY_SPEED = 3
+PROJECTILE_SPEED = 10
+BACKGROUND_COLOR = (0, 0, 0)
+PLAYER_COLOR = (255, 255, 255)
+ENEMY_COLOR = (255, 0, 0)
+PROJECTILE_COLOR = (0, 255, 0)
+FONT_NAME = 'arial'
+FONT_SIZE = 24
 
-# Game-related constants
+COLLISION_MARGIN = 5
 
-# Screen dimensions
-SCREEN_WIDTH: Final[int] = 1024
-SCREEN_HEIGHT: Final[int] = 768
-
-# Frame rate settings
-FPS: Final[int] = 60
-
-# Color constants (RGB)
-BLACK: Final[tuple[int, int, int]] = (0, 0, 0)
-WHITE: Final[tuple[int, int, int]] = (255, 255, 255)
-RED: Final[tuple[int, int, int]] = (255, 0, 0)
-GREEN: Final[tuple[int, int, int]] = (0, 255, 0)
-BLUE: Final[tuple[int, int, int]] = (0, 0, 255)
-
-# Minimum and maximum player health
-MIN_HEALTH: Final[int] = 0
-MAX_HEALTH: Final[int] = 100
-
-# Game levels
-LEVELS: Final[list[str]] = ["Easy", "Medium", "Hard"]
-
-# Difficulty multipliers
-DIFFICULTY_MULTIPLIERS: Final[dict[str, float]] = {
-    "Easy": 1.0,
-    "Medium": 1.5,
-    "Hard": 2.0,
+LEVELS = {
+    1: {'enemy_count': 5, 'difficulty': 'easy'},
+    2: {'enemy_count': 10, 'difficulty': 'medium'},
+    3: {'enemy_count': 15, 'difficulty': 'hard'},
 }
 
-# Game keys
-MOVE_UP: Final[str] = 'w'
-MOVE_DOWN: Final[str] = 's'
-MOVE_LEFT: Final[str] = 'a'
-MOVE_RIGHT: Final[str] = 'd'
+POWER_UPS = {
+    'health': {'value': 20, 'duration': 0},
+    'speed': {'value': 2, 'duration': 10},
+    'damage': {'value': 5, 'duration': 15},
+}
+
+ANIMATIONS = {
+    'explosion': {'frames': 16, 'duration': 0.5},
+    'power_up': {'frames': 8, 'duration': 2},
+}
+
