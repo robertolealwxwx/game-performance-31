@@ -1,26 +1,42 @@
 class GameError(Exception):
-    """Custom exception for game errors."""
+    """Base class for all game-related exceptions."""
+    pass
+
+class PlayerError(GameError):
+    """Exception raised for player-related errors."""
     def __init__(self, message):
         self.message = message
         super().__init__(self.message)
 
-class InvalidInputError(GameError):
-    """Exception raised for invalid input in game settings."""
-    pass
-
-class ResourceNotFoundError(GameError):
-    """Exception raised when a game resource is not found."""
-    pass
-
-class NetworkError(GameError):
-    """Exception raised for network-related issues."""
-    def __init__(self, message, code):
+class GameResourceError(GameError):
+    """Exception raised for issues with game resources."""
+    def __init__(self, resource, message):
+        self.resource = resource
         self.message = message
-        self.code = code
         super().__init__(self.message)
 
-if __name__ == '__main__':
+def load_player_data(player_id):
+    """Loads player data by player_id. Raises PlayerError if not found."""
     try:
-        raise InvalidInputError('Input value is not valid')
-    except InvalidInputError as e:
-        print(e.message)
+        if player_id <= 0:
+            raise PlayerError('Invalid player ID provided.')
+        data = get_player_data_from_db(player_id)  # Hypothetical function
+        if not data:
+            raise PlayerError(f'Player with ID {player_id} not found.')
+        return data
+    except PlayerError as e:
+        print(e)
+        return None
+
+def load_game_resources(resource_name):
+    """Loads game resources. Raises GameResourceError if not available."""
+    try:
+        if not resource_name:
+            raise GameResourceError(resource_name, 'Resource name cannot be empty.')
+        resource = get_resource(resource_name)  # Hypothetical function
+        if resource is None:
+            raise GameResourceError(resource_name, 'Resource not found.')
+        return resource
+    except GameResourceError as e:
+        print(e)
+        return None
