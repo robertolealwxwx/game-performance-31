@@ -1,37 +1,43 @@
-def validate_score(score):
+def is_valid_username(username):
     """
-    Validates the score provided by the player.
-    Returns True if the score is an integer between 0 and 100,
-    raises ValueError if invalid.
+    Validate username for length and characters.
+    Username must be 3-15 characters long and can include letters, numbers, and underscores.
     """
-    if not isinstance(score, int):
-        raise ValueError('Score must be an integer.')
-    if score < 0 or score > 100:
-        raise ValueError('Score must be between 0 and 100.')
+    if not (3 <= len(username) <= 15):
+        return False
+    if not username.isalnum() and '_' not in username:
+        return False
     return True
 
 
-def validate_player_name(name):
+def is_valid_password(password):
     """
-    Validates the player's name.
-    Returns True if the name is a non-empty string,
-    raises ValueError if invalid.
+    Validate password strength.
+    Password must be at least 8 characters long, contain at least one digit,
+    one uppercase letter, and one special character.
     """
-    if not isinstance(name, str):
-        raise ValueError('Player name must be a string.')
-    if len(name.strip()) == 0:
-        raise ValueError('Player name cannot be empty.')
+    if len(password) < 8:
+        return False
+    if not any(char.isdigit() for char in password):
+        return False
+    if not any(char.isupper() for char in password):
+        return False
+    if not any(char in '!@#$%^&*()-+=' for char in password):
+        return False
     return True
 
 
-def validate_game_level(level):
+def is_valid_email(email):
     """
-    Validates the game level.
-    Returns True if the level is in the acceptable range,
-    raises ValueError if invalid.
+    Validate email format using a simple regex pattern.
     """
-    if not isinstance(level, int):
-        raise ValueError('Game level must be an integer.')
-    if level < 1 or level > 10:
-        raise ValueError('Game level must be between 1 and 10.')
-    return True
+    import re
+    email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    return re.match(email_regex, email) is not None
+
+
+if __name__ == '__main__':
+    # Test the validation functions
+    print(is_valid_username('user_name123'))  # True
+    print(is_valid_password('StrongP@ss1'))   # True
+    print(is_valid_email('email@example.com'))  # True
