@@ -1,29 +1,31 @@
 import random
-import math
 
-def generate_random_point(x_range, y_range):
-    """Generates a random point within given x and y range."""
-    x = random.uniform(*x_range)
-    y = random.uniform(*y_range)
+
+def generate_random_position(max_x, max_y):
+    """Generate a random (x, y) position within specified boundaries."""
+    x = random.randint(0, max_x)
+    y = random.randint(0, max_y)
     return (x, y)
 
-def distance_between_points(point1, point2):
-    """Calculates Euclidean distance between two points."""
-    return math.sqrt((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2)
+
+def calculate_distance(point1, point2):
+    """Calculate the Euclidean distance between two points."""
+    return ((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2) ** 0.5
+
 
 def clamp(value, min_value, max_value):
-    """Clamps a value between min and max values."""
+    """Restrict a value to lie within a given range."""
     return max(min_value, min(value, max_value))
 
-def interpolate(start, end, t):
-    """Linearly interpolates between two values based on t value (0.0 to 1.0)."""
-    return start + (end - start) * t
 
-def load_sprite(image_path):
-    """Loads and returns a sprite image from a given path."""
-    from PIL import Image
-    return Image.open(image_path)
+def lerp(start, end, t):
+    """Linearly interpolate between two values based on t."""
+    return (1 - t) * start + t * end
 
-def save_sprite(sprite, save_path):
-    """Saves a sprite image to a given path."""
-    sprite.save(save_path)
+
+def normalize_vector(vector):
+    """Return the normalized version of a vector, or None if the vector is zero."""
+    length = (vector[0] ** 2 + vector[1] ** 2) ** 0.5
+    if length == 0:
+        return None
+    return (vector[0] / length, vector[1] / length)
