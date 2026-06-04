@@ -1,33 +1,31 @@
-class GameConfig:
-    def __init__(self):
-        self.settings = {
-            'screen_width': 800,
-            'screen_height': 600,
-            'fps': 60,
-            'background_color': (0, 0, 0),
-            'title': 'Game Title'
-        }
+import json
+import os
 
-    def get_setting(self, key):
-        return self.settings.get(key, None)
+DEFAULT_CONFIG = {
+    'resolution': '1920x1080',
+    'fullscreen': True,
+    'volume': 0.5,
+    'controls': {
+        'move_up': 'W',
+        'move_down': 'S',
+        'move_left': 'A',
+        'move_right': 'D',
+        'shoot': 'SPACE'
+    }
+}
 
-    def set_setting(self, key, value):
-        self.settings[key] = value
+def load_config(file_path='config.json'):
+    # Check if the specified config file exists
+    if not os.path.isfile(file_path):
+        return DEFAULT_CONFIG  # Return defaults if file does not exist
+    
+    # Load the configuration from the JSON file
+    with open(file_path, 'r') as file:
+        config = json.load(file)
+    
+    # Update the default configuration with any loaded settings
+    return {**DEFAULT_CONFIG, **config}
 
-    def load_settings(self, file_path):
-        import json
-        try:
-            with open(file_path, 'r') as f:
-                self.settings.update(json.load(f))
-        except (FileNotFoundError, json.JSONDecodeError) as e:
-            print(f'Error loading settings: {e}')
-
-    def save_settings(self, file_path):
-        import json
-        with open(file_path, 'w') as f:
-            json.dump(self.settings, f, indent=4)
-
-# Example of usage:
-# config = GameConfig()
-# config.load_settings('config.json')
-# print(config.get_setting('title'))
+if __name__ == '__main__':
+    config = load_config()
+    print(config)
