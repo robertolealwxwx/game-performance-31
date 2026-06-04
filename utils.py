@@ -1,34 +1,32 @@
-import time
+import random
+import math
 
-class PerformanceTimer:
-    def __init__(self):
-        self.start_time = 0
-        self.end_time = 0
-
-    def start(self):
-        self.start_time = time.time()
-
-    def stop(self):
-        self.end_time = time.time()
-
-    def duration(self):
-        return self.end_time - self.start_time
-
-    def log_duration(self):
-        duration = self.duration()
-        print(f"Performance duration: {duration:.4f} seconds")
+def calculate_distance(point1, point2):
+    """Calculate the Euclidean distance between two points."""
+    return math.sqrt((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2)
 
 
-def optimized_function(data):
-    # Use a set for O(1) average time complexity
-    unique_data = set(data)
-    return list(unique_data)  
+def generate_random_position(bounds):
+    """Generate a random position within given bounds."""
+    x = random.uniform(bounds['x_min'], bounds['x_max'])
+    y = random.uniform(bounds['y_min'], bounds['y_max'])
+    return (x, y)
 
 
-def process_data(data):
-    timer = PerformanceTimer()
-    timer.start()
-    result = optimized_function(data)
-    timer.stop()
-    timer.log_duration()
-    return result
+def clamp(value, min_value, max_value):
+    """Clamp a value between min and max."""
+    return max(min_value, min(value, max_value))
+
+
+def load_json(file_path):
+    """Load a JSON file and return its content."""
+    import json
+    with open(file_path, 'r') as file:
+        return json.load(file)
+
+
+def save_json(data, file_path):
+    """Save data to a JSON file."""
+    import json
+    with open(file_path, 'w') as file:
+        json.dump(data, file, indent=4)
