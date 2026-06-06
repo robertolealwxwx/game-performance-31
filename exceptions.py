@@ -1,42 +1,32 @@
 class GameError(Exception):
-    """Base class for all game-related exceptions."""
+    """Base class for game related errors."""
     pass
 
-class PlayerError(GameError):
-    """Exception raised for player-related errors."""
+class InitializationError(GameError):
+    """Raised when initialization fails."""
     def __init__(self, message):
-        self.message = message
-        super().__init__(self.message)
+        super().__init__(f'Initialization Error: {message}')
 
-class GameResourceError(GameError):
-    """Exception raised for issues with game resources."""
-    def __init__(self, resource, message):
-        self.resource = resource
-        self.message = message
-        super().__init__(self.message)
+class ResourceNotFoundError(GameError):
+    """Raised when a required resource is not found."""
+    def __init__(self, resource):
+        super().__init__(f'Resource Not Found: {resource}')
 
-def load_player_data(player_id):
-    """Loads player data by player_id. Raises PlayerError if not found."""
-    try:
-        if player_id <= 0:
-            raise PlayerError('Invalid player ID provided.')
-        data = get_player_data_from_db(player_id)  # Hypothetical function
-        if not data:
-            raise PlayerError(f'Player with ID {player_id} not found.')
-        return data
-    except PlayerError as e:
-        print(e)
-        return None
+class InputError(GameError):
+    """Raised when there is invalid input."""
+    def __init__(self, input_value):
+        super().__init__(f'Invalid Input: {input_value}')
 
-def load_game_resources(resource_name):
-    """Loads game resources. Raises GameResourceError if not available."""
-    try:
-        if not resource_name:
-            raise GameResourceError(resource_name, 'Resource name cannot be empty.')
-        resource = get_resource(resource_name)  # Hypothetical function
-        if resource is None:
-            raise GameResourceError(resource_name, 'Resource not found.')
-        return resource
-    except GameResourceError as e:
-        print(e)
-        return None
+# Example usage in game component
+
+def load_resource(resource_name):
+    resources = {'hero': 'hero_model', 'enemy': 'enemy_model'}
+    if resource_name not in resources:
+        raise ResourceNotFoundError(resource_name)
+    return resources[resource_name]
+
+
+def initialize_game(config):
+    if 'level' not in config:
+        raise InitializationError('Config must include level')
+    return True
