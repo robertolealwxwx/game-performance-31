@@ -1,27 +1,26 @@
 import logging
 from logging.handlers import RotatingFileHandler
 
+# Function to set up logger with rotation
 
-def setup_logger(log_file, max_bytes=5*1024*1024, backup_count=3):
-    """Sets up a rotating logger that records game performance logs."""
-    logger = logging.getLogger("GamePerformanceLogger")
-    logger.setLevel(logging.DEBUG)
+def setup_logger(log_file='game_performance.log', max_bytes=1e6, backup_count=5):
+    """
+    Sets up a logger with a rotating file handler.
+    :param log_file: The name of the log file.
+    :param max_bytes: Maximum file size before rotation (in bytes).
+    :param backup_count: Number of backup log files to keep.
+    """
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
 
-    # Create a file handler that rotates logs
+    # Create a rotating file handler
     handler = RotatingFileHandler(log_file, maxBytes=max_bytes, backupCount=backup_count)
-    handler.setLevel(logging.DEBUG)
-
-    # Create a formatter and set it for the handler
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)
-
-    # Add the handler to the logger
-    if not logger.hasHandlers():
-        logger.addHandler(handler)
+    logger.addHandler(handler)
     return logger
 
-
-# Example usage - typically placed in the entry point of your application
-if __name__ == "__main__":
-    log = setup_logger('game_performance.log')
-    log.info('Logger is set up and ready')
+# Example usage
+if __name__ == '__main__':
+    logger = setup_logger()
+    logger.info('Logger is set up and ready to go.')
