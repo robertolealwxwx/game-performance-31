@@ -1,31 +1,37 @@
-import random
-
-
-def generate_random_position(max_x, max_y):
-    """Generate a random (x, y) position within specified boundaries."""
-    x = random.randint(0, max_x)
-    y = random.randint(0, max_y)
-    return (x, y)
-
-
-def calculate_distance(point1, point2):
-    """Calculate the Euclidean distance between two points."""
-    return ((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2) ** 0.5
+def calculate_fps(frames, time):
+    """Calculate frames per second (FPS)"""
+    if time <= 0:
+        return 0
+    return frames / time
 
 
 def clamp(value, min_value, max_value):
-    """Restrict a value to lie within a given range."""
-    return max(min_value, min(value, max_value))
+    """Clamp a value to a given range"""
+    return max(min(value, max_value), min_value)
 
 
-def lerp(start, end, t):
-    """Linearly interpolate between two values based on t."""
-    return (1 - t) * start + t * end
+def load_image(file_path):
+    """Load an image from the given file path"""
+    from PIL import Image
+    try:
+        return Image.open(file_path)
+    except FileNotFoundError:
+        raise Exception(f'Image not found: {file_path}')
 
 
-def normalize_vector(vector):
-    """Return the normalized version of a vector, or None if the vector is zero."""
-    length = (vector[0] ** 2 + vector[1] ** 2) ** 0.5
-    if length == 0:
-        return None
-    return (vector[0] / length, vector[1] / length)
+def check_collision(rect_a, rect_b):
+    """Check if two rectangles collide"""
+    return (rect_a['x'] < rect_b['x'] + rect_b['width'] and
+            rect_a['x'] + rect_a['width'] > rect_b['x'] and
+            rect_a['y'] < rect_b['y'] + rect_b['height'] and
+            rect_a['y'] + rect_a['height'] > rect_b['y'])
+
+
+def smooth_step(edge0, edge1, x):
+    """Smooth step interpolation"""
+    if x < edge0:
+        return 0
+    if x > edge1:
+        return 1
+    t = (x - edge0) / (edge1 - edge0)
+    return t * t * (3 - 2 * t)
