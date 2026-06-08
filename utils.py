@@ -1,32 +1,36 @@
-import random
-import math
+import json
 
-def calculate_distance(point1, point2):
-    """Calculate the Euclidean distance between two points."""
-    return math.sqrt((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2)
-
-
-def generate_random_position(bounds):
-    """Generate a random position within given bounds."""
-    x = random.uniform(bounds['x_min'], bounds['x_max'])
-    y = random.uniform(bounds['y_min'], bounds['y_max'])
-    return (x, y)
+class GameDataError(Exception):
+    """Custom exception for game data errors."""
+    pass
 
 
-def clamp(value, min_value, max_value):
-    """Clamp a value between min and max."""
-    return max(min_value, min(value, max_value))
+def load_game_data(file_path):
+    """Load game data from a JSON file."""
+    try:
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+            return data
+    except FileNotFoundError:
+        raise GameDataError(f'File not found: {file_path}')
+    except json.JSONDecodeError:
+        raise GameDataError(f'Invalid JSON in file: {file_path}')
+    except Exception as e:
+        raise GameDataError(f'An error occurred: {str(e)}')
 
 
-def load_json(file_path):
-    """Load a JSON file and return its content."""
-    import json
-    with open(file_path, 'r') as file:
-        return json.load(file)
+def save_game_data(file_path, data):
+    """Save game data to a JSON file."""
+    try:
+        with open(file_path, 'w') as file:
+            json.dump(data, file, indent=4)
+    except Exception as e:
+        raise GameDataError(f'Failed to save data: {str(e)}')
 
 
-def save_json(data, file_path):
-    """Save data to a JSON file."""
-    import json
-    with open(file_path, 'w') as file:
-        json.dump(data, file, indent=4)
+def validate_game_data(data):
+    """Validate game data structure."""
+    required_keys = ['name', 'score', 'level']
+    if not all(key in data for key in required_keys):
+        raise GameDataError('Missing required game data fields.')
+    return True
