@@ -2,30 +2,23 @@ import json
 import os
 
 DEFAULT_CONFIG = {
-    'resolution': '1920x1080',
-    'fullscreen': True,
+    'window_width': 800,
+    'window_height': 600,
+    'fullscreen': False,
     'volume': 0.5,
-    'controls': {
-        'move_up': 'W',
-        'move_down': 'S',
-        'move_left': 'A',
-        'move_right': 'D',
-        'shoot': 'SPACE'
-    }
+    'graphics_quality': 'high'
 }
 
-def load_config(file_path='config.json'):
-    # Check if the specified config file exists
-    if not os.path.isfile(file_path):
-        return DEFAULT_CONFIG  # Return defaults if file does not exist
-    
-    # Load the configuration from the JSON file
-    with open(file_path, 'r') as file:
-        config = json.load(file)
-    
-    # Update the default configuration with any loaded settings
-    return {**DEFAULT_CONFIG, **config}
-
-if __name__ == '__main__':
-    config = load_config()
-    print(config)
+def load_config(filename='config.json'):
+    '''Load configuration from a JSON file with defaults.'''
+    if not os.path.isfile(filename):
+        return DEFAULT_CONFIG
+    with open(filename, 'r') as config_file:
+        try:
+            user_config = json.load(config_file)
+        except json.JSONDecodeError:
+            print('Error decoding JSON, using defaults.')
+            return DEFAULT_CONFIG
+    # Merge user config with defaults
+    config = {**DEFAULT_CONFIG, **user_config}
+    return config
