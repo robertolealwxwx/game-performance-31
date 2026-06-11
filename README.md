@@ -1,49 +1,53 @@
 # Game Performance 31
 
-Game Performance 31 is a Python-based tool designed to analyze and optimize gaming performance metrics. By providing real-time data and insights, developers can improve game efficiency and enhance user experience.
+Game Performance 31 is a Python library designed to analyze and optimize gaming performance metrics. This tool enables developers to track frame rates, resource usage, and latency, ensuring a smoother gaming experience for players.
 
 ## Features
 
-- **Real-Time Performance Monitoring**: Track key metrics such as frame rate, memory usage, and CPU load while your game is running.
-- **Customizable Reporting**: Generate visual reports tailored to specific performance aspects, assisting in identifying bottlenecks.
-- **Compatibility with Popular Game Engines**: Seamlessly integrates with Unity and Unreal Engine, making it versatile for different game development environments.
-- **Cross-Platform Support**: Works on Windows, macOS, and Linux, ensuring developers can optimize games across all major operating systems.
+- **Real-Time Metrics**: Capture essential performance metrics (FPS, memory usage, etc.) in real-time during gameplay.
+- **Comparative Analysis**: Easily compare performance benchmarks between different game builds or settings.
+- **Visualization Tools**: Includes simple plotting functions to visualize performance trends over time for insightful analysis.
+- **Cross-Platform Compatibility**: Works seamlessly on Windows, macOS, and Linux, allowing easy integration into various gaming projects.
 
 ## Installation
 
-To get started with Game Performance 31, clone the repository and install the required dependencies:
+To install Game Performance 31, simply clone the repository and run the setup script:
 
 ```bash
 git clone https://github.com/Developer/game-performance-31.git
 cd game-performance-31
 pip install -r requirements.txt
+python setup.py install
 ```
 
 ## Basic Usage
 
-To utilize Game Performance 31 in your project, you can start by importing the library and initializing the performance monitor. Here’s a simple example:
+After installation, import the library and start tracking your game's performance metrics as shown in the example below:
 
 ```python
-from game_performance import PerformanceMonitor
+from game_performance import PerformanceTracker
 
-# Initialize the performance monitor
-monitor = PerformanceMonitor()
+# Initialize the performance tracker
+tracker = PerformanceTracker()
 
-# Start monitoring
-monitor.start()
+# Start tracking
+tracker.start()
 
-# Simulate game loop
-while game_is_running():
-    # Perform your game logic
-    pass
+# Your game loop here
+while game_is_running:
+    # Game logic and rendering
+    tracker.update()  # Update performance metrics
 
-# Stop monitoring and generate report
-monitor.stop()
-monitor.generate_report()
+# Stop tracking after game ends
+tracker.stop()
+
+# Print the collected performance data
+performance_data = tracker.get_metrics()
+print(performance_data)
 ```
 
-With this basic setup, you will be able to gather essential performance data during your game's execution and generate insights to help you optimize your code.
+## License
 
-![MIT License](https://img.shields.io/badge/license-MIT-green)
+![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
 
-For more detailed documentation and advanced usage examples, check the [Wiki](https://github.com/Developer/game-performance-31/wiki). Your feedback and contributions are welcome!
+Game Performance 31 is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
