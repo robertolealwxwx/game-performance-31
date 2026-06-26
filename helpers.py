@@ -1,37 +1,27 @@
-import random
-import math
+import time
+import requests
 
-def clamp(value, min_value, max_value):
-    """Restrict a value within a range."""
-    return max(min(value, max_value), min_value)
+class NetworkError(Exception):
+    pass
 
+def retry_request(url, retries=3, backoff=1):
+    """Perform a network request with retry logic."""
+    attempt = 0
+    while attempt < retries:
+        try:
+            response = requests.get(url)
+            response.raise_for_status()  # Raise an error for bad responses
+            return response.json()  # Return JSON data if successful
+        except requests.exceptions.RequestException as e:
+            attempt += 1
+            if attempt == retries:
+                raise NetworkError(f'Failed to fetch data after {retries} attempts') from e
+            time.sleep(backoff * (2 ** (attempt - 1)))  # Exponential backoff
 
-def distance(point1, point2):
-    """Calculate Euclidean distance between two points."""
-    return math.sqrt((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2)
-
-
-def random_choice(sequence):
-    """Return a random element from a non-empty sequence."""
-    if not sequence:
-        raise ValueError('Cannot choose from an empty sequence')
-    return random.choice(sequence)
-
-
-def linear_interpolation(start, end, ratio):
-    """Perform linear interpolation between start and end based on ratio."""
-    return start + (end - start) * ratio
-
-
-def load_from_json(file_path):
-    """Load data from a JSON file."""
-    import json
-    with open(file_path, 'r') as file:
-        return json.load(file)
-
-
-def save_to_json(data, file_path):
-    """Save data to a JSON file."""
-    import json
-    with open(file_path, 'w') as file:
-        json.dump(data, file, indent=4)
+# Example usage
+if __name__ == '__main__':
+    try:
+        data = retry_request('https://api.example.com/data')
+        print(data)
+    except NetworkError as ne:
+        print(ne)
