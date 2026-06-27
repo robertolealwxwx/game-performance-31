@@ -1,27 +1,47 @@
-import time
-import requests
+from typing import List, Dict
 
-class NetworkError(Exception):
-    pass
 
-def retry_request(url, retries=3, backoff=1):
-    """Perform a network request with retry logic."""
-    attempt = 0
-    while attempt < retries:
-        try:
-            response = requests.get(url)
-            response.raise_for_status()  # Raise an error for bad responses
-            return response.json()  # Return JSON data if successful
-        except requests.exceptions.RequestException as e:
-            attempt += 1
-            if attempt == retries:
-                raise NetworkError(f'Failed to fetch data after {retries} attempts') from e
-            time.sleep(backoff * (2 ** (attempt - 1)))  # Exponential backoff
+def calculate_average(scores: List[float]) -> float:
+    """
+    Calculate the average of a list of scores.
 
-# Example usage
-if __name__ == '__main__':
-    try:
-        data = retry_request('https://api.example.com/data')
-        print(data)
-    except NetworkError as ne:
-        print(ne)
+    Args:
+        scores (List[float]): A list of float scores.
+
+    Returns:
+        float: The average score calculated as a float.
+    """
+    if not scores:
+        return 0.0
+    return sum(scores) / len(scores)
+
+
+def find_high_score(scores: List[float]) -> float:
+    """
+    Find the highest score from a list of scores.
+
+    Args:
+        scores (List[float]): A list of float scores.
+
+    Returns:
+        float: The highest score found.
+    """
+    if not scores:
+        return 0.0
+    return max(scores)
+
+
+def score_summary(scores: List[float]) -> Dict[str, float]:
+    """
+    Generate a summary of scores including average and high score.
+
+    Args:
+        scores (List[float]): A list of float scores.
+
+    Returns:
+        Dict[str, float]: A dictionary containing average and high score.
+    """
+    return {
+        'average': calculate_average(scores),
+        'high_score': find_high_score(scores)
+    }
