@@ -1,47 +1,37 @@
-from typing import List, Dict
+import random
+import math
+
+def clamp(value, min_value, max_value):
+    """Clamp the value between min_value and max_value."""
+    return max(min(value, max_value), min_value)
 
 
-def calculate_average(scores: List[float]) -> float:
-    """
-    Calculate the average of a list of scores.
-
-    Args:
-        scores (List[float]): A list of float scores.
-
-    Returns:
-        float: The average score calculated as a float.
-    """
-    if not scores:
-        return 0.0
-    return sum(scores) / len(scores)
+def lerp(start, end, t):
+    """Linear interpolation between start and end by t."""
+    return start + (end - start) * t
 
 
-def find_high_score(scores: List[float]) -> float:
-    """
-    Find the highest score from a list of scores.
-
-    Args:
-        scores (List[float]): A list of float scores.
-
-    Returns:
-        float: The highest score found.
-    """
-    if not scores:
-        return 0.0
-    return max(scores)
+def random_choice(options):
+    """Return a random choice from a list of options."""
+    return random.choice(options)
 
 
-def score_summary(scores: List[float]) -> Dict[str, float]:
-    """
-    Generate a summary of scores including average and high score.
+def distance(point1, point2):
+    """Calculate the Euclidean distance between two points."""
+    return math.sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
 
-    Args:
-        scores (List[float]): A list of float scores.
 
-    Returns:
-        Dict[str, float]: A dictionary containing average and high score.
-    """
-    return {
-        'average': calculate_average(scores),
-        'high_score': find_high_score(scores)
-    }
+def is_colliding(rect1, rect2):
+    """Check if two rectangles are colliding."""
+    return (rect1[0] < rect2[0] + rect2[2] and
+            rect1[0] + rect1[2] > rect2[0] and
+            rect1[1] < rect2[1] + rect2[3] and
+            rect1[1] + rect1[3] > rect2[1])
+
+
+def normalize(vector):
+    """Normalize a 2D vector."""
+    length = math.sqrt(vector[0] ** 2 + vector[1] ** 2)
+    if length == 0:
+        return (0, 0)
+    return (vector[0] / length, vector[1] / length)
