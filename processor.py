@@ -1,27 +1,37 @@
-import requests
 import time
 
-class NetworkError(Exception):
-    pass
+class GameProcessor:
+    def __init__(self):
+        self.start_time = None
+        self.end_time = None
 
-def fetch_data(url, retries=3, backoff=1):
-    """Fetches data from a given URL with retry logic."""
-    for attempt in range(retries):
-        try:
-            response = requests.get(url)
-            response.raise_for_status()  # Raise an error for bad responses
-            return response.json()  # Returning JSON response
-        except requests.exceptions.RequestException as e:
-            print(f'Attempt {attempt + 1} failed: {e}')  # Log the error
-            if attempt < retries - 1:
-                time.sleep(backoff * (2 ** attempt))  # Exponential backoff
-            else:
-                raise NetworkError(f'Failed to fetch data after {retries} attempts')
+    def start_timer(self):
+        """Start the timing for game execution."""
+        self.start_time = time.time()
+        print("Timer started.")
 
-if __name__ == '__main__':
-    url = 'https://api.example.com/data'
-    try:
-        data = fetch_data(url)
-        print(data)
-    except NetworkError as ne:
-        print(ne)  # Exception handling for network errors
+    def stop_timer(self):
+        """Stop the timing and return the elapsed time."""
+        if self.start_time is None:
+            raise Exception("Timer was not started.\n")
+        self.end_time = time.time()
+        elapsed_time = self.end_time - self.start_time
+        print(f"Timer stopped. Elapsed time: {elapsed_time:.2f} seconds")
+        return elapsed_time
+
+    def reset_timer(self):
+        """Reset the timer to initial state."""
+        self.start_time = None
+        self.end_time = None
+        print("Timer reset.")
+
+    def process_game_data(self, data):
+        """Simulate processing of game data."""
+        print(f"Processing game data: {data}")
+        time.sleep(0.3)  # Simulating processing time
+
+    def run(self, data):
+        """Run the game processor with the provided data."""
+        self.start_timer()
+        self.process_game_data(data)
+        self.stop_timer()
