@@ -1,33 +1,45 @@
-import random
-import math
+from typing import List, Dict, Any
 
 
-def random_choice(choices):
-    """Return a random choice from a list."""
-    if not choices:
-        raise ValueError('The choices list must not be empty.')
-    return random.choice(choices)
+def calculate_average_score(scores: List[float]) -> float:
+    """Calculate the average score from a list of scores.
+
+    Args:
+        scores (List[float]): A list of score values.
+
+    Returns:
+        float: The average score, or 0 if the list is empty.
+    """
+    if not scores:
+        return 0.0
+    return sum(scores) / len(scores)
 
 
-def distance(point1, point2):
-    """Calculate the Euclidean distance between two points."""
-    return math.sqrt((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2)
+def filter_high_scores(scores: List[float], threshold: float) -> List[float]:
+    """Filter and return scores above a given threshold.
+
+    Args:
+        scores (List[float]): A list of score values.
+        threshold (float): The score threshold.
+
+    Returns:
+        List[float]: A list of scores above the threshold.
+    """
+    return [score for score in scores if score > threshold]
 
 
-def clamp(value, min_value, max_value):
-    """Clamp a value between a minimum and maximum."""
-    return max(min(value, max_value), min_value)
+def format_score_info(player_name: str, scores: List[float]) -> Dict[str, Any]:
+    """Format player score information as a dictionary.
 
+    Args:
+        player_name (str): The name of the player.
+        scores (List[float]): A list of score values.
 
-def load_json(file_path):
-    """Load a JSON file and return its content."""
-    import json
-    with open(file_path, 'r') as file:
-        return json.load(file)
-
-
-def save_json(data, file_path):
-    """Save data to a JSON file."""
-    import json
-    with open(file_path, 'w') as file:
-        json.dump(data, file, indent=4)
+    Returns:
+        Dict[str, Any]: A dictionary containing player name and their scores.
+    """
+    return {
+        'player': player_name,
+        'average_score': calculate_average_score(scores),
+        'high_scores': filter_high_scores(scores, 75.0)
+    }  
