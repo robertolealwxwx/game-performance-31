@@ -1,41 +1,39 @@
 import json
-from utils import calculate_score
-from constants import MAX_SCORE
 
-class GameHandler:
-    def __init__(self, player_name):
-        self.player_name = player_name
-        self.score = 0
+class GameDataHandler:
+    def __init__(self, data_file):
+        self.data_file = data_file
 
-    def update_score(self, points):
-        """Update the player's score and limit it to MAX_SCORE."""
-        self.score += points
-        if self.score > MAX_SCORE:
-            self.score = MAX_SCORE
-
-    def get_score(self):
-        """Return the current score of the player."""
-        return self.score
-
-    def save_score(self, filename='scores.json'):
-        """Save the current score to a JSON file."""
-        data = {'player_name': self.player_name, 'score': self.score}
-        with open(filename, 'w') as f:
-            json.dump(data, f)
-
-    def load_score(self, filename='scores.json'):
-        """Load player score from a JSON file."""
+    def load_data(self):
+        """Load game data from a JSON file."""
         try:
-            with open(filename, 'r') as f:
-                data = json.load(f)
-                self.player_name = data['player_name']
-                self.score = data['score']
-        except (FileNotFoundError, KeyError):
-            print('Score file not found or corrupted')
-            self.score = 0
+            with open(self.data_file, 'r') as file:
+                return json.load(file)
+        except FileNotFoundError:
+            print(f"Error: {self.data_file} not found.")
+            return {}
+        except json.JSONDecodeError:
+            print("Error: Failed to decode JSON.")
+            return {}
+
+    def save_data(self, data):
+        """Save game data to a JSON file.""" 
+        with open(self.data_file, 'w') as file:
+            json.dump(data, file, indent=4)
+
+    def update_game_data(self, new_data):
+        """Update the existing game data with new data."""
+        current_data = self.load_data()
+        current_data.update(new_data)
+        self.save_data(current_data)
+
+    def get_player_scores(self, player_name):
+        """Retrieve scores for a specific player."""
+        data = self.load_data()
+        return data.get(player_name, {}).get('scores', [])
 
 if __name__ == '__main__':
-    handler = GameHandler('Player1')
-    handler.update_score(50)
-    print(f'Score: {handler.get_score()}')
-    handler.save_score()
+    handler = GameDataHandler('game_data.json')
+    print(handler.load_data())
+    handler.update_game_data({'player1': {'scores': [100, 200, 300]}})
+    print(handler.get_player_scores('player1'))
