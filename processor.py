@@ -1,37 +1,39 @@
 import time
+import random
 
 class GameProcessor:
     def __init__(self):
-        self.start_time = None
-        self.end_time = None
+        self.players = []
+        self.performance_metrics = []
 
-    def start_timer(self):
-        """Start the timing for game execution."""
-        self.start_time = time.time()
-        print("Timer started.")
+    def add_player(self, player_id):
+        self.players.append(player_id)
 
-    def stop_timer(self):
-        """Stop the timing and return the elapsed time."""
-        if self.start_time is None:
-            raise Exception("Timer was not started.\n")
-        self.end_time = time.time()
-        elapsed_time = self.end_time - self.start_time
-        print(f"Timer stopped. Elapsed time: {elapsed_time:.2f} seconds")
-        return elapsed_time
+    def optimize_player_actions(self):
+        # Optimize actions with simple sampling to reduce load
+        sampled_players = random.sample(self.players, min(3, len(self.players)))
+        for player in sampled_players:
+            self.perform_actions(player)
 
-    def reset_timer(self):
-        """Reset the timer to initial state."""
-        self.start_time = None
-        self.end_time = None
-        print("Timer reset.")
+    def perform_actions(self, player):
+        # Simulating action performance with time tracking
+        start_time = time.time()
+        action_time = random.uniform(0.1, 0.5)
+        time.sleep(action_time)  # Simulate action duration
+        end_time = time.time()
 
-    def process_game_data(self, data):
-        """Simulate processing of game data."""
-        print(f"Processing game data: {data}")
-        time.sleep(0.3)  # Simulating processing time
+        # Store performance metrics
+        self.performance_metrics.append({'player': player, 'action_time': end_time - start_time})
 
-    def run(self, data):
-        """Run the game processor with the provided data."""
-        self.start_timer()
-        self.process_game_data(data)
-        self.stop_timer()
+    def get_performance_metrics(self):
+        return self.performance_metrics
+
+if __name__ == '__main__':
+    processor = GameProcessor()
+    # Add players to the game
+    for i in range(10):
+        processor.add_player(f'player_{i}')
+    
+    # Optimize actions and capture performance
+o = processor.optimize_player_actions()
+    print(processor.get_performance_metrics())
