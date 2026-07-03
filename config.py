@@ -2,23 +2,34 @@ import json
 import os
 
 DEFAULT_CONFIG = {
-    'window_width': 800,
-    'window_height': 600,
-    'fullscreen': False,
+    'screen_width': 1920,
+    'screen_height': 1080,
+    'full_screen': False,
     'volume': 0.5,
-    'graphics_quality': 'high'
+    'language': 'en',
 }
 
-def load_config(filename='config.json'):
-    '''Load configuration from a JSON file with defaults.'''
-    if not os.path.isfile(filename):
+class ConfigLoader:
+    def __init__(self, config_file='config.json'):
+        self.config_file = config_file
+        self.config = self.load_config()
+
+    def load_config(self):
+        if os.path.exists(self.config_file):
+            with open(self.config_file, 'r') as file:
+                user_config = json.load(file)
+                return {**DEFAULT_CONFIG, **user_config}
         return DEFAULT_CONFIG
-    with open(filename, 'r') as config_file:
-        try:
-            user_config = json.load(config_file)
-        except json.JSONDecodeError:
-            print('Error decoding JSON, using defaults.')
-            return DEFAULT_CONFIG
-    # Merge user config with defaults
-    config = {**DEFAULT_CONFIG, **user_config}
-    return config
+
+    def get(self, key):
+        return self.config.get(key, DEFAULT_CONFIG.get(key))
+
+    def set(self, key, value):
+        self.config[key] = value
+        self.save_config()
+
+    def save_config(self):
+        with open(self.config_file, 'w') as file:
+            json.dump(self.config, file, indent=4)
+
+config_loader = ConfigLoader()
