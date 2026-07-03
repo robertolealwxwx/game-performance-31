@@ -1,34 +1,33 @@
-import sys
-
-# Constants for input validation
-VALID_INPUTS = {'up', 'down', 'left', 'right', 'quit'}
+from typing import List, Dict, Any
 
 class Game:
-    def __init__(self):
-        self.running = True
+    def __init__(self, name: str, players: List[str]) -> None:
+        """Initialize the Game object with name and players."""
+        self.name = name
+        self.players = players
+        self.scoreboard: Dict[str, int] = {player: 0 for player in players}
 
-    def run(self):
-        while self.running:
-            user_input = input('Enter your move (up, down, left, right, quit): ')
-            self.process_input(user_input)
-
-    def process_input(self, user_input):
-        # Validate input
-        if self.validate_input(user_input):
-            self.handle_move(user_input)
+    def update_score(self, player: str, points: int) -> None:
+        """Update the score for a given player."""
+        if player in self.scoreboard:
+            self.scoreboard[player] += points
         else:
-            print(f'Invalid input: {user_input}. Please try again.')
+            raise ValueError(f"Player {player} not found in the game.")
 
-    def validate_input(self, user_input):
-        return user_input in VALID_INPUTS
+    def get_scores(self) -> Dict[str, int]:
+        """Return the current scoreboard."""
+        return self.scoreboard
 
-    def handle_move(self, move):
-        if move == 'quit':
-            self.running = False
-            print('Exiting the game.')
-        else:
-            print(f'You moved {move}.')
+    def game_over(self) -> str:
+        """Return the name of the player with the highest score."""
+        winner = max(self.scoreboard, key=self.scoreboard.get)
+        return f"The winner is {winner} with {self.scoreboard[winner]} points!"
 
+# Example usage:
 if __name__ == '__main__':
-    game = Game()
-    game.run()
+    game = Game("Super Fun Game", ["Alice", "Bob", "Charlie"])
+    game.update_score("Alice", 10)
+    game.update_score("Bob", 5)
+    game.update_score("Charlie", 8)
+    print(game.get_scores())
+    print(game.game_over())
