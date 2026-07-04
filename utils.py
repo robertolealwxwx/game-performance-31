@@ -1,45 +1,47 @@
-from typing import List, Dict, Any
+import json
+import os
 
 
-def calculate_average_score(scores: List[float]) -> float:
-    """Calculate the average score from a list of scores.
-
-    Args:
-        scores (List[float]): A list of score values.
-
-    Returns:
-        float: The average score, or 0 if the list is empty.
+def load_game_data(filepath):
     """
-    if not scores:
-        return 0.0
-    return sum(scores) / len(scores)
-
-
-def filter_high_scores(scores: List[float], threshold: float) -> List[float]:
-    """Filter and return scores above a given threshold.
-
+    Load game data from a JSON file.
     Args:
-        scores (List[float]): A list of score values.
-        threshold (float): The score threshold.
-
+        filepath (str): Path to the JSON file.
     Returns:
-        List[float]: A list of scores above the threshold.
+        dict: Parsed JSON data.
+    Raises:
+        FileNotFoundError: If the file does not exist.
+        json.JSONDecodeError: If the file is not a valid JSON.
     """
-    return [score for score in scores if score > threshold]
+    if not os.path.exists(filepath):
+        raise FileNotFoundError(f"File not found: {filepath}")
+    with open(filepath, 'r') as file:
+        return json.load(file)
 
 
-def format_score_info(player_name: str, scores: List[float]) -> Dict[str, Any]:
-    """Format player score information as a dictionary.
-
+def save_game_data(filepath, data):
+    """
+    Save game data to a JSON file.
     Args:
-        player_name (str): The name of the player.
-        scores (List[float]): A list of score values.
-
-    Returns:
-        Dict[str, Any]: A dictionary containing player name and their scores.
+        filepath (str): Path to the JSON file.
+        data (dict): Game data to save.
+    Raises:
+        IOError: If the file cannot be written.
     """
-    return {
-        'player': player_name,
-        'average_score': calculate_average_score(scores),
-        'high_scores': filter_high_scores(scores, 75.0)
-    }  
+    try:
+        with open(filepath, 'w') as file:
+            json.dump(data, file, indent=4)
+    except IOError as e:
+        raise IOError(f"Error writing to file: {filepath}. {e}")
+
+
+def update_game_data(filepath, updates):
+    """
+    Update existing game data with new information.
+    Args:
+        filepath (str): Path to the JSON file.
+        updates (dict): Updates to merge into existing data.
+    """
+    current_data = load_game_data(filepath)
+    current_data.update(updates)
+    save_game_data(filepath, current_data)
