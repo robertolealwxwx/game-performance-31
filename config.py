@@ -1,35 +1,36 @@
 import json
 import os
 
-DEFAULT_CONFIG = {
-    'screen_width': 1920,
-    'screen_height': 1080,
-    'full_screen': False,
-    'volume': 0.5,
-    'language': 'en',
-}
+class ConfigError(Exception):
+    pass
 
-class ConfigLoader:
-    def __init__(self, config_file='config.json'):
-        self.config_file = config_file
-        self.config = self.load_config()
+class Config:
+    def __init__(self, filepath):
+        self.filepath = filepath
+        self.config_data = self.load_config()
 
     def load_config(self):
-        if os.path.exists(self.config_file):
-            with open(self.config_file, 'r') as file:
-                user_config = json.load(file)
-                return {**DEFAULT_CONFIG, **user_config}
-        return DEFAULT_CONFIG
+        if not os.path.exists(self.filepath):
+            raise ConfigError(f"Configuration file not found: {self.filepath}")
+        
+        try:
+            with open(self.filepath, 'r') as config_file:
+                return json.load(config_file)
+        except json.JSONDecodeError as e:
+            raise ConfigError(f"Error parsing JSON in config file: {str(e)}")
+        except Exception as e:
+            raise ConfigError(f"An unexpected error occurred: {str(e)}")
 
-    def get(self, key):
-        return self.config.get(key, DEFAULT_CONFIG.get(key))
+    def get(self, key, default=None):
+        return self.config_data.get(key, default)
 
-    def set(self, key, value):
-        self.config[key] = value
-        self.save_config()
+    def save(self):
+        try:
+            with open(self.filepath, 'w') as config_file:
+                json.dump(self.config_data, config_file, indent=4)
+        except Exception as e:
+            raise ConfigError(f"Failed to save config file: {str(e)}")
 
-    def save_config(self):
-        with open(self.config_file, 'w') as file:
-            json.dump(self.config, file, indent=4)
-
-config_loader = ConfigLoader()
+# Example usage:
+# config = Config('config.json')
+# print(config.get('some_key', 'default_value'))
