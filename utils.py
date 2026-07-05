@@ -1,47 +1,25 @@
-import json
-import os
+import time
+import requests
 
+class NetworkError(Exception):
+    pass
 
-def load_game_data(filepath):
+def retry_request(url, retries=3, backoff_factor=0.3):
     """
-    Load game data from a JSON file.
-    Args:
-        filepath (str): Path to the JSON file.
-    Returns:
-        dict: Parsed JSON data.
-    Raises:
-        FileNotFoundError: If the file does not exist.
-        json.JSONDecodeError: If the file is not a valid JSON.
+    Makes a network request with retry logic.
+    :param url: URL to perform the request
+    :param retries: Number of times to retry
+    :param backoff_factor: Factor for exponential backoff
+    :return: Response object
     """
-    if not os.path.exists(filepath):
-        raise FileNotFoundError(f"File not found: {filepath}")
-    with open(filepath, 'r') as file:
-        return json.load(file)
-
-
-def save_game_data(filepath, data):
-    """
-    Save game data to a JSON file.
-    Args:
-        filepath (str): Path to the JSON file.
-        data (dict): Game data to save.
-    Raises:
-        IOError: If the file cannot be written.
-    """
-    try:
-        with open(filepath, 'w') as file:
-            json.dump(data, file, indent=4)
-    except IOError as e:
-        raise IOError(f"Error writing to file: {filepath}. {e}")
-
-
-def update_game_data(filepath, updates):
-    """
-    Update existing game data with new information.
-    Args:
-        filepath (str): Path to the JSON file.
-        updates (dict): Updates to merge into existing data.
-    """
-    current_data = load_game_data(filepath)
-    current_data.update(updates)
-    save_game_data(filepath, current_data)
+    for attempt in range(retries):
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            return response
+        except requests.RequestException as e:
+            if attempt < retries - 1:
+                wait_time = backoff_factor * (2 ** attempt)
+                time.sleep(wait_time)
+            else:
+                raise NetworkError(f'Failed to fetch {url}: {str(e)}')
