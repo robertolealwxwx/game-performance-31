@@ -1,23 +1,29 @@
-from typing import Tuple
+from typing import Final
 
-# Constants for game configuration
-FPS: int = 60  # Frames per second
+# Constants used throughout the game
 
-# Game resolution
-SCREEN_WIDTH: int = 1280
-SCREEN_HEIGHT: int = 720
+# Screen dimensions
+SCREEN_WIDTH: Final[int] = 800
+SCREEN_HEIGHT: Final[int] = 600
 
-# Colors represented in RGB
-BLACK: Tuple[int, int, int] = (0, 0, 0)
-WHITE: Tuple[int, int, int] = (255, 255, 255)
-RED: Tuple[int, int, int] = (255, 0, 0)
-GREEN: Tuple[int, int, int] = (0, 255, 0)
-BLUE: Tuple[int, int, int] = (0, 0, 255)
+# Frame rate
+FPS: Final[int] = 60
 
-def get_game_resolution() -> Tuple[int, int]:
-    """Return the game resolution as a tuple of (width, height)."""
-    return SCREEN_WIDTH, SCREEN_HEIGHT
+# Colors
+BLACK: Final[tuple[int, int, int]] = (0, 0, 0)
+WHITE: Final[tuple[int, int, int]] = (255, 255, 255)
+RED: Final[tuple[int, int, int]] = (255, 0, 0)
+GREEN: Final[tuple[int, int, int]] = (0, 255, 0)
+BLUE: Final[tuple[int, int, int]] = (0, 0, 255)
 
-def get_fps() -> int:
-    """Return the frames per second for the game."""
-    return FPS
+# Game states
+class GameState:
+    MAIN_MENU: Final[str] = 'main_menu'
+    PLAYING: Final[str] = 'playing'
+    PAUSED: Final[str] = 'paused'
+    GAME_OVER: Final[str] = 'game_over'
+
+# Default settings
+DEFAULT_VOLUME: Final[float] = 0.5
+DEFAULT_DIFFICULTY: Final[str] = 'normal'
+
