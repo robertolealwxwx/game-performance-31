@@ -1,40 +1,25 @@
 import logging
+from logging.handlers import RotatingFileHandler
 
-# Configure the logger for the game
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('game.log'),
-        logging.StreamHandler()
-    ]
-)
+# Set up basic configuration for logging
+LOG_FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
+LOG_FILE = 'game_performance.log'
+LOG_MAX_BYTES = 5 * 1024 * 1024  # 5 MB
+LOG_BACKUP_COUNT = 3
 
-logger = logging.getLogger()
-
-# Function to log game events
-
-def log_event(event_type, message):
-    """
-    Logs an event message with a specific type.
-
-    :param event_type: Type of the event (e.g., INFO, WARNING, ERROR)
-    :param message: Message to log
-    """
-    if event_type == 'info':
-        logger.info(message)
-    elif event_type == 'warning':
-        logger.warning(message)
-    elif event_type == 'error':
-        logger.error(message)
-    elif event_type == 'debug':
-        logger.debug(message)
-    else:
-        logger.error('Unknown event type: %s', event_type)
+def setup_logger():
+    
+    logger = logging.getLogger('game_performance_logger')
+    logger.setLevel(logging.DEBUG)
+    
+    # Create a rotating file handler
+    handler = RotatingFileHandler(LOG_FILE, maxBytes=LOG_MAX_BYTES, backupCount=LOG_BACKUP_COUNT)
+    handler.setFormatter(logging.Formatter(LOG_FORMAT))
+    
+    # Add the handler to the logger
+    logger.addHandler(handler)
+    return logger
 
 # Example usage
-if __name__ == '__main__':
-    log_event('info', 'Game started')
-    log_event('debug', 'Loading resources')
-    log_event('warning', 'Low memory warning')
-    log_event('error', 'Failed to load level')
+debug_logger = setup_logger()
+debug_logger.info('Logger is set up successfully.')
