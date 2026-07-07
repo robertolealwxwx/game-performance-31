@@ -1,37 +1,44 @@
-import random
-import math
-
-def clamp(value, min_value, max_value):
-    """Clamp the value between min_value and max_value."""
-    return max(min(value, max_value), min_value)
+import json
 
 
-def lerp(start, end, t):
-    """Linear interpolation between start and end by t."""
-    return start + (end - start) * t
+def load_game_data(file_path):
+    """
+    Load game data from a JSON file.
+    :param file_path: Path to the JSON file
+    :return: Parsed JSON data as a dictionary
+    """
+    try:
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+        return data
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        print(f"Error loading game data: {e}")
+        return {}
 
 
-def random_choice(options):
-    """Return a random choice from a list of options."""
-    return random.choice(options)
+def save_game_data(file_path, data):
+    """
+    Save game data to a JSON file.
+    :param file_path: Path to the JSON file
+    :param data: Data to save (should be serializable)
+    """
+    try:
+        with open(file_path, 'w') as file:
+            json.dump(data, file, indent=4)
+        print(f"Game data saved successfully to {file_path}")
+    except (IOError, TypeError) as e:
+        print(f"Error saving game data: {e}")
 
 
-def distance(point1, point2):
-    """Calculate the Euclidean distance between two points."""
-    return math.sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
-
-
-def is_colliding(rect1, rect2):
-    """Check if two rectangles are colliding."""
-    return (rect1[0] < rect2[0] + rect2[2] and
-            rect1[0] + rect1[2] > rect2[0] and
-            rect1[1] < rect2[1] + rect2[3] and
-            rect1[1] + rect1[3] > rect2[1])
-
-
-def normalize(vector):
-    """Normalize a 2D vector."""
-    length = math.sqrt(vector[0] ** 2 + vector[1] ** 2)
-    if length == 0:
-        return (0, 0)
-    return (vector[0] / length, vector[1] / length)
+def update_game_score(data, player_id, score_increment):
+    """
+    Update the player's score in the game data.
+    :param data: Game data dictionary
+    :param player_id: ID of the player
+    :param score_increment: Amount to increment the score by
+    """
+    if player_id in data:
+        data[player_id]['score'] += score_increment
+        print(f"Updated score for player {player_id}: {data[player_id]['score']}")
+    else:
+        print(f"Player ID {player_id} not found in data.")
