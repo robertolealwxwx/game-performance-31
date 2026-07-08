@@ -1,39 +1,23 @@
-import time
-import random
+from typing import List, Dict
 
-class GameProcessor:
-    def __init__(self):
-        self.players = []
-        self.performance_metrics = []
 
-    def add_player(self, player_id):
-        self.players.append(player_id)
+def process_game_data(game_data: List[Dict[str, str]]) -> Dict[str, int]:
+    """Processes game data to calculate score totals.
 
-    def optimize_player_actions(self):
-        # Optimize actions with simple sampling to reduce load
-        sampled_players = random.sample(self.players, min(3, len(self.players)))
-        for player in sampled_players:
-            self.perform_actions(player)
+    Args:
+        game_data (List[Dict[str, str]]): A list of game data dictionaries, each containing 'score' and 'player_name'.
 
-    def perform_actions(self, player):
-        # Simulating action performance with time tracking
-        start_time = time.time()
-        action_time = random.uniform(0.1, 0.5)
-        time.sleep(action_time)  # Simulate action duration
-        end_time = time.time()
-
-        # Store performance metrics
-        self.performance_metrics.append({'player': player, 'action_time': end_time - start_time})
-
-    def get_performance_metrics(self):
-        return self.performance_metrics
-
-if __name__ == '__main__':
-    processor = GameProcessor()
-    # Add players to the game
-    for i in range(10):
-        processor.add_player(f'player_{i}')
+    Returns:
+        Dict[str, int]: A dictionary with player names as keys and their total scores as values.
+    """
+    total_scores: Dict[str, int] = {}
     
-    # Optimize actions and capture performance
-o = processor.optimize_player_actions()
-    print(processor.get_performance_metrics())
+    for entry in game_data:
+        player_name = entry.get('player_name')
+        score = int(entry.get('score', 0))
+        if player_name:
+            if player_name not in total_scores:
+                total_scores[player_name] = 0
+            total_scores[player_name] += score
+    
+    return total_scores
