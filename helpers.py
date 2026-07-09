@@ -1,44 +1,41 @@
 import json
+from typing import Any, Dict
 
-
-def load_game_data(file_path):
+def load_game_data(file_path: str) -> Dict[str, Any]:
     """
     Load game data from a JSON file.
-    :param file_path: Path to the JSON file
-    :return: Parsed JSON data as a dictionary
+    
+    Args:
+        file_path (str): The path to the JSON file.
+    
+    Returns:
+        Dict[str, Any]: The parsed JSON data as a Python dictionary.
     """
-    try:
-        with open(file_path, 'r') as file:
-            data = json.load(file)
-        return data
-    except (FileNotFoundError, json.JSONDecodeError) as e:
-        print(f"Error loading game data: {e}")
-        return {}
+    with open(file_path, 'r') as file:
+        return json.load(file)
 
 
-def save_game_data(file_path, data):
+def save_game_data(file_path: str, data: Dict[str, Any]) -> None:
     """
     Save game data to a JSON file.
-    :param file_path: Path to the JSON file
-    :param data: Data to save (should be serializable)
+    
+    Args:
+        file_path (str): The path to the JSON file.
+        data (Dict[str, Any]): The data to save in JSON format.
     """
-    try:
-        with open(file_path, 'w') as file:
-            json.dump(data, file, indent=4)
-        print(f"Game data saved successfully to {file_path}")
-    except (IOError, TypeError) as e:
-        print(f"Error saving game data: {e}")
+    with open(file_path, 'w') as file:
+        json.dump(data, file, indent=4)
 
 
-def update_game_score(data, player_id, score_increment):
+def update_game_data(file_path: str, key: str, value: Any) -> None:
     """
-    Update the player's score in the game data.
-    :param data: Game data dictionary
-    :param player_id: ID of the player
-    :param score_increment: Amount to increment the score by
+    Update specific key in the game data JSON file.
+    
+    Args:
+        file_path (str): The path to the JSON file.
+        key (str): The key to update in the data.
+        value (Any): The new value to set for the key.
     """
-    if player_id in data:
-        data[player_id]['score'] += score_increment
-        print(f"Updated score for player {player_id}: {data[player_id]['score']}")
-    else:
-        print(f"Player ID {player_id} not found in data.")
+    data = load_game_data(file_path)
+    data[key] = value
+    save_game_data(file_path, data)
