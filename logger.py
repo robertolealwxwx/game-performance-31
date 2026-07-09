@@ -1,32 +1,21 @@
 import logging
 from logging.handlers import RotatingFileHandler
 
-class Logger:
-    def __init__(self, name, log_file, max_bytes=5*1024*1024, backup_count=5):
-        """Initialize logger with rotating file handler."""
-        self.logger = logging.getLogger(name)
-        self.logger.setLevel(logging.DEBUG)
-        self.handler = RotatingFileHandler(log_file, maxBytes=max_bytes, backupCount=backup_count)
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        self.handler.setFormatter(formatter)
-        self.logger.addHandler(self.handler)
+# Configure logger
+logger = logging.getLogger('game_logger')
+logger.setLevel(logging.DEBUG)
 
-    def debug(self, message):
-        self.logger.debug(message)
+# Create a file handler that logs debug and higher level messages
+handler = RotatingFileHandler('game_performance.log', maxBytes=5 * 1024 * 1024, backupCount=3)
+handler.setLevel(logging.DEBUG)
 
-    def info(self, message):
-        self.logger.info(message)
+# Create a logging format
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
 
-    def warning(self, message):
-        self.logger.warning(message)
+# Add the handler to the logger
+logger.addHandler(handler)
 
-    def error(self, message):
-        self.logger.error(message)
-
-    def critical(self, message):
-        self.logger.critical(message)
-
-# Example usage:
+# Simple log record for testing
 if __name__ == '__main__':
-    app_logger = Logger('MyApp', 'app.log')
-    app_logger.info('Logger has been set up successfully.')
+    logger.info('Logger is set up and ready to go!')
